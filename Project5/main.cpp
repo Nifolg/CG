@@ -185,6 +185,8 @@ int main()
 
 	Shader skyboxShader("shaders/skybox.vs", "shaders/skybox.frag");
 
+	Shader reflectShader("shaders/reflection.vs", "shaders/reflection.frag");
+
 
 
 	//load textures for normal_mapping
@@ -320,7 +322,50 @@ int main()
 		-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
 		 25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
 	};
+	float cubeVertices[] = {
+		// координаты        // нормали
+	   -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	   -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	   -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
+	   -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	   -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	   -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+	   -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	   -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	   -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	   -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	   -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	   -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+	   -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	   -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	   -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+	   -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	   -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	   -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+	};
 	float skyboxVertices[] = {
 		// positions
 		-1.0f,  1.0f, -1.0f,
@@ -422,7 +467,19 @@ int main()
 
 
 	// !!! END shadows VAO, depth_map FBO
-
+	//reflect VAO
+	unsigned int cubeVAO, cubeVBO;
+	glGenVertexArrays(1, &cubeVAO);
+	glGenBuffers(1, &cubeVBO);
+	glBindVertexArray(cubeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	
+	
 	// skybox VAO
 	unsigned int skyboxVAO, skyboxVBO;
 	glGenVertexArrays(1, &skyboxVAO);
@@ -473,6 +530,9 @@ int main()
 		"myskybox2/posz.jpg",
 		"myskybox2/negz.jpg"
 	};*/
+
+	unsigned int cubeTexture = loadTexture("res/images/wood.png");
+
 	std::vector<std::string> faces
 	{
 		"skybox/front.jpg",
@@ -497,6 +557,9 @@ int main()
 	shadowShader.Use();
 	shadowShader.setInt("diffuseTexture", 0);
 	shadowShader.setInt("shadowMap", 1);
+
+	reflectShader.Use();
+	reflectShader.setInt("skybox", 0);
 
 	skyboxShader.Use();
 	skyboxShader.setInt("skybox", 0);
@@ -667,6 +730,21 @@ int main()
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS); // set depth function back to default
 
+		reflectShader.Use();
+		model = glm::mat4(1.0f);
+		view = camera.GetViewMatrix();
+		model = glm::translate(model, glm::vec3(-3.0, 2.0, 0.5));
+		model = glm::rotate(model, glm::radians((float)glfwGetTime() * 30.0f), glm::normalize(glm::vec3(-0.75, 0.5, -1.0)));
+		model = glm::scale(model, glm::vec3(0.7f));
+		reflectShader.setMat4("model", model);
+		reflectShader.setMat4("view", view);
+		reflectShader.setMat4("projection", projection);
+		reflectShader.setVec3("cameraPos", camera.Position);
+		glBindVertexArray(cubeVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
 
 		// !!! BEGIN BILLBORDS
 
@@ -994,7 +1072,7 @@ void renderScene(Shader &shader)
 	shader.setMat4("model", model);
 	renderCube();
 	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0));
+	model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 1.0));
 	model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
 	model = glm::scale(model, glm::vec3(0.25));
 	shader.setMat4("model", model);
