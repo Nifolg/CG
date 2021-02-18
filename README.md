@@ -2,7 +2,7 @@
 
 Эффекты:
 
-Кубическая текстура в режиме окружающей среды(skybox) - polygonal, Отбрасывание теней на объекты и плоскость - polygonal, Parallax relief mapping - polygonal, Попиксельный расчет освещенности по стандартным моделям - polygonal, Полупрозрачные объекты - polygonal.
+Кубическая текстура в режиме окружающей среды(skybox) - polygonal, Отбрасывание теней на объекты и плоскость - polygonal, Parallax relief mapping - polygonal, Попиксельный расчет освещенности по стандартным моделям - polygonal, Полупрозрачные объекты - polygonal, Зеркальные грани - polygonal.
 
 Сборка на Windows:
 
