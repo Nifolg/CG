@@ -149,27 +149,27 @@ int main()
 
 	 // Build and compile our shader program
 	 //Shader ourShader("shader.vs","shader.frag");
-	 
+
 	 // configure global opengl state
 	 // -----------------------------
-	 glEnable(GL_DEPTH_TEST);//включили режим смешивания и выбрали его параметры
-	 glEnable(GL_BLEND);//включаем смешивание цветов(для создания полупрозрачных билбордов)
-	 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	 
-	 //glBlendColor(0.5f,0.5f,0.5f,0.5f);
-	 //glBlendFunc(GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR);
+	glEnable(GL_DEPTH_TEST);//включили режим смешивания и выбрали его параметры
+	glEnable(GL_BLEND);//включаем смешивание цветов(для создания полупрозрачных билбордов)
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	 /*
-	  !!!
-	  порядок действий при рендере сцены, содержащей как непрозрачные, так и прозрачные объекты, выглядит следующим образом:
+	//glBlendColor(0.5f,0.5f,0.5f,0.5f);
+	//glBlendFunc(GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR);
 
-	  Вывести все непрозрачные объекты.
-	  Отсортировать прозрачные объекты по удалению.
-	  Нарисовать прозрачные объекты в отсортированном порядке.
-	  */
+	/*
+	 !!!
+	 порядок действий при рендере сцены, содержащей как непрозрачные, так и прозрачные объекты, выглядит следующим образом:
 
-	  // configure global opengl state
-	  // -----------------------------
+	 Вывести все непрозрачные объекты.
+	 Отсортировать прозрачные объекты по удалению.
+	 Нарисовать прозрачные объекты в отсортированном порядке.
+	 */
+
+	 // configure global opengl state
+	 // -----------------------------
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);//включаем смешивание цветов(для создания полупрозрачных билбордов)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//формула для смешивания цветов
@@ -295,7 +295,7 @@ int main()
 	std::vector<glm::vec3> windows //billbord coords
 	{
 		glm::vec3(-1.5f, 0.0f, -0.48f),
-		glm::vec3(1.5f, 0.0f, 0.51f),
+		glm::vec3(1.5f, 2.0f, 0.51f),
 		glm::vec3(0.0f, 0.0f, 0.7f),
 		glm::vec3(-0.3f, 0.0f, -2.3f),
 		glm::vec3(0.5f, 0.0f, -0.6f)
@@ -537,7 +537,7 @@ int main()
 		// sort the transparent windows before rendering
 		// ---------------------------------------------
 
-		
+
 
 		// render
 		// ------
@@ -682,8 +682,8 @@ int main()
 			   //сортируем окна по удаленности и будем выводить от дальнего к ближнему, чтобы через ближние было видно дальние
 			   // sort the transparent windows before rendering
 			   // ---------------------------------------------
-		
-		
+
+
 
 		/*std::vector<windows_struct> sortwindows(windows.size());
 		for (unsigned int i = 0; i < windows.size(); i++)
@@ -724,7 +724,7 @@ int main()
 		billbordShader.setMat4("view", view);
 		billbordShader.setMat4("projection", projection);
 
-		
+
 
 
 		// cubes
@@ -782,73 +782,73 @@ int main()
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}*/
 
-		
-
-// !!! END BILLBORDS
 
 
+		// !!! END BILLBORDS
 
 
-/*
-
-// set uniforms
-shader.Use();
-
-glm::mat4 model ; matrix_init4(model);
-glm::mat4 view ;  matrix_init4(view);
-glm::mat4 projection; matrix_init4(projection);
-
-model = glm::mat4(1.0f);
-view = camera.GetViewMatrix();
-projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH/ (float)HEIGHT, 0.1f, 100.0f);
-shader.setMat4("view", view);
-shader.setMat4("projection", projection);
-
-shader.Use();
-shader.setMat4("view", view);
-shader.setMat4("projection", projection);
-
-/*
- шаги, необходимые для вывода сцены в текстуру:
-
- 1. Привязать наш объект буфера кадра как текущий и вывести сцену обычным образом.
- 2. Привязать буфер кадра по умолчанию.
- 3. Вывести полноэкранный квад с наложением текстуры из буфера цвета нашего объекта кадрового буфера.
-
- */
- /*
- // cubes
- glBindVertexArray(cubeVAO);
- glActiveTexture(GL_TEXTURE0);
- glBindTexture(GL_TEXTURE_2D, cubeTexture);
- model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
- shader.setMat4("model", model);
- glDrawArrays(GL_TRIANGLES, 0, 36);
- model = glm::mat4(1.0f);
- model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
- shader.setMat4("model", model);
- glDrawArrays(GL_TRIANGLES, 0, 36);
 
 
- // draw skybox as last
- glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
- //это надо, чтобы уменьшить нагрузку на вычисления skybox и ненужные части не рендерить
+		/*
 
- skyboxShader.Use();
- view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
- skyboxShader.setMat4("view", view);
- skyboxShader.setMat4("projection", projection);
+		// set uniforms
+		shader.Use();
 
- // skybox cube
- glBindVertexArray(skyboxVAO);
- glActiveTexture(GL_TEXTURE0);
- glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
- glDrawArrays(GL_TRIANGLES, 0, 36);
- glBindVertexArray(0);
- glDepthFunc(GL_LESS); // set depth function back to default
-  */
-  // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-  // -------------------------------------------------------------------------------
+		glm::mat4 model ; matrix_init4(model);
+		glm::mat4 view ;  matrix_init4(view);
+		glm::mat4 projection; matrix_init4(projection);
+
+		model = glm::mat4(1.0f);
+		view = camera.GetViewMatrix();
+		projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH/ (float)HEIGHT, 0.1f, 100.0f);
+		shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
+
+		shader.Use();
+		shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
+
+		/*
+		 шаги, необходимые для вывода сцены в текстуру:
+
+		 1. Привязать наш объект буфера кадра как текущий и вывести сцену обычным образом.
+		 2. Привязать буфер кадра по умолчанию.
+		 3. Вывести полноэкранный квад с наложением текстуры из буфера цвета нашего объекта кадрового буфера.
+
+		 */
+		 /*
+		 // cubes
+		 glBindVertexArray(cubeVAO);
+		 glActiveTexture(GL_TEXTURE0);
+		 glBindTexture(GL_TEXTURE_2D, cubeTexture);
+		 model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+		 shader.setMat4("model", model);
+		 glDrawArrays(GL_TRIANGLES, 0, 36);
+		 model = glm::mat4(1.0f);
+		 model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+		 shader.setMat4("model", model);
+		 glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		 // draw skybox as last
+		 glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+		 //это надо, чтобы уменьшить нагрузку на вычисления skybox и ненужные части не рендерить
+
+		 skyboxShader.Use();
+		 view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+		 skyboxShader.setMat4("view", view);
+		 skyboxShader.setMat4("projection", projection);
+
+		 // skybox cube
+		 glBindVertexArray(skyboxVAO);
+		 glActiveTexture(GL_TEXTURE0);
+		 glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		 glDrawArrays(GL_TRIANGLES, 0, 36);
+		 glBindVertexArray(0);
+		 glDepthFunc(GL_LESS); // set depth function back to default
+		  */
+		  // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+		  // -------------------------------------------------------------------------------
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -1217,31 +1217,31 @@ unsigned int loadTexture(char const* path)
 // -Z (back)
 // -------------------------------------------------------
 unsigned int loadCubemap(std::vector<std::string> faces)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
 	{
-		unsigned int textureID;
-		glGenTextures(1, &textureID);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-		int width, height, nrChannels;
-		for (unsigned int i = 0; i < faces.size(); i++)
+		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
 		{
-			unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-			if (data)
-			{
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-				stbi_image_free(data);
-			}
-			else
-			{
-				std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
-				stbi_image_free(data);
-			}
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
 		}
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-		return textureID;
+		else
+		{
+			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
 	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	return textureID;
+}
