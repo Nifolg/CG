@@ -10,7 +10,8 @@ uniform mat4 projection;
 
 void main()
 {
+    vec3 rPos = inverse(mat3(view)) * aPos;
     TexCoords = aTexCoords;
     gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
-//Местоположение текстуры чаще называется !!!текстурным блоком!!!
+

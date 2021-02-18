@@ -95,7 +95,7 @@ int main()
 
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Learn OpenGL", nullptr, nullptr);
+	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "CG", nullptr, nullptr);
 	global_window = window;
 	{
 		glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
@@ -149,13 +149,13 @@ int main()
 
 	 // Build and compile our shader program
 	 //Shader ourShader("shader.vs","shader.frag");
-	 /*
+	 
 	 // configure global opengl state
 	 // -----------------------------
 	 glEnable(GL_DEPTH_TEST);//включили режим смешивания и выбрали его параметры
 	 glEnable(GL_BLEND);//включаем смешивание цветов(для создания полупрозрачных билбордов)
 	 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	 */
+	 
 	 //glBlendColor(0.5f,0.5f,0.5f,0.5f);
 	 //glBlendFunc(GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR);
 
@@ -537,7 +537,7 @@ int main()
 		// sort the transparent windows before rendering
 		// ---------------------------------------------
 
-
+		
 
 		// render
 		// ------
@@ -682,16 +682,10 @@ int main()
 			   //сортируем окна по удаленности и будем выводить от дальнего к ближнему, чтобы через ближние было видно дальние
 			   // sort the transparent windows before rendering
 			   // ---------------------------------------------
+		
+		
 
-			   /*std::map<float, glm::vec3> sorted;
-			   for (unsigned int i = 0; i < windows.size(); i++)
-			   {
-				   float distance = glm::length(camera.Position - windows[i]);
-				   sorted[distance] = windows[i];
-			   }
-		*/
-
-		std::vector<windows_struct> sortwindows(windows.size());
+		/*std::vector<windows_struct> sortwindows(windows.size());
 		for (unsigned int i = 0; i < windows.size(); i++)
 		{
 			float distance = glm::length(camera.Position - windows[i]);
@@ -701,14 +695,17 @@ int main()
 
 			sortwindows.push_back(curwind);
 		}
-		std::sort(sortwindows.begin(), sortwindows.end(), compareByDistance);
+		std::sort(sortwindows.begin(), sortwindows.end(), compareByDistance);*/
+
+		std::multimap<float, glm::vec3> sorted;
+		for (unsigned int i = 0; i < windows.size(); i++)
+		{
+			float distance = glm::length(camera.Position - windows[i]);
+			sorted.insert(std::make_pair(distance, windows[i]));
+		}
 
 		// render
 		// ------
-
-
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-		//отчистка буфера цветов,буфера глубины,ТРАФАРЕТНОГО БУФЕРА
 
 		// set uniforms
 		billbordShader.Use();
@@ -726,6 +723,8 @@ int main()
 		billbordShader.Use();
 		billbordShader.setMat4("view", view);
 		billbordShader.setMat4("projection", projection);
+
+		
 
 
 		// cubes
@@ -767,23 +766,23 @@ int main()
 
 		//выводим окна от дальнего к ближнему
 
-		for (unsigned int i = 0; i < sortwindows.size(); i++)
+		for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it)
+		{
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, it->second);
+			billbordShader.setMat4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+		}
+
+		/*for (unsigned int i = 0; i < sortwindows.size(); i++)
 		{
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, sortwindows[i].w);
 			billbordShader.setMat4("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
-		}
+		}*/
 
-		/*
-			   for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it)
-			   {
-				   model = glm::mat4(1.0f);
-				   model = glm::translate(model, it->second);
-				   billbordShader.setMat4("model", model);
-				   glDrawArrays(GL_TRIANGLES, 0, 6);
-			   }
-*/
+		
 
 // !!! END BILLBORDS
 
