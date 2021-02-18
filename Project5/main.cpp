@@ -752,7 +752,7 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 
-		//refraction
+		//refraction 
 		refractShader.Use();
 		model = glm::mat4(1.0f);
 		view = camera.GetViewMatrix();
