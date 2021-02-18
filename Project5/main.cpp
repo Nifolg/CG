@@ -187,6 +187,7 @@ int main()
 
 	Shader reflectShader("shaders/reflection.vs", "shaders/reflection.frag");
 
+	Shader refractShader("shaders/refraction.vs", "shaders/refraction.frag");
 
 
 	//load textures for normal_mapping
@@ -561,6 +562,9 @@ int main()
 	reflectShader.Use();
 	reflectShader.setInt("skybox", 0);
 
+	refractShader.Use();
+	refractShader.setInt("skybox", 0);
+
 	skyboxShader.Use();
 	skyboxShader.setInt("skybox", 0);
 
@@ -729,7 +733,9 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS); // set depth function back to default
-
+		
+							  
+		//reflection
 		reflectShader.Use();
 		model = glm::mat4(1.0f);
 		view = camera.GetViewMatrix();
@@ -740,6 +746,23 @@ int main()
 		reflectShader.setMat4("view", view);
 		reflectShader.setMat4("projection", projection);
 		reflectShader.setVec3("cameraPos", camera.Position);
+		glBindVertexArray(cubeVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+
+		//refraction
+		refractShader.Use();
+		model = glm::mat4(1.0f);
+		view = camera.GetViewMatrix();
+		model = glm::translate(model, glm::vec3(-4.0, 3.0, 0.5));
+		model = glm::rotate(model, glm::radians((float)glfwGetTime() * 30.0f), glm::normalize(glm::vec3(-0.75, 0.5, -1.0)));
+		model = glm::scale(model, glm::vec3(0.7f));
+		refractShader.setMat4("model", model);
+		refractShader.setMat4("view", view);
+		refractShader.setMat4("projection", projection);
+		refractShader.setVec3("cameraPos", camera.Position);
 		glBindVertexArray(cubeVAO);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
